@@ -1,7 +1,8 @@
 import type { TranscriberConfig } from "./transcriber";
-import type { AgentConfig } from "./agent";
+import type { AgentConfig, ChatGPTAgentConfig } from "./agent";
 import type { SynthesizerConfig } from "./synthesizer";
 import { AudioEncoding } from "./audioEncoding";
+import { BaseMessage } from "./message";
 
 export type WebSocketMessageType =
   | "websocket_start"
@@ -41,6 +42,8 @@ export interface AudioConfigStartMessage extends WebSocketMessage {
   outputAudioConfig: OutputAudioConfig;
   conversationId?: string;
   subscribeTranscript?: boolean;
+  promptPreamble: string;
+  initialMessage?: BaseMessage;
 }
 
 export interface AudioMessage extends WebSocketMessage {

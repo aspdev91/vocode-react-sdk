@@ -20,9 +20,14 @@ import {
   StartMessage,
   StopMessage,
 } from "../types/vocode/websocket";
-import { DeepgramTranscriberConfig, TranscriberConfig } from "../types";
+import {
+  ChatGPTAgentConfig,
+  DeepgramTranscriberConfig,
+  TranscriberConfig,
+} from "../types";
 import { isSafari, isChrome } from "react-device-detect";
 import { Buffer } from "buffer";
+import { BaseMessage } from "../types/vocode/message";
 
 const VOCODE_API_URL = "api.vocode.dev";
 const DEFAULT_CHUNK_SIZE = 2048;
@@ -41,6 +46,7 @@ export const useConversation = (
   transcripts: Transcript[];
   currentSpeaker: CurrentSpeaker;
 } => {
+  console.log("Starting config", config);
   const [audioContext, setAudioContext] = React.useState<AudioContext>();
   const [audioAnalyser, setAudioAnalyser] = React.useState<AnalyserNode>();
   const [audioQueue, setAudioQueue] = React.useState<Buffer[]>([]);
@@ -183,6 +189,8 @@ export const useConversation = (
   const getAudioConfigStartMessage = (
     inputAudioMetadata: { samplingRate: number; audioEncoding: AudioEncoding },
     outputAudioMetadata: { samplingRate: number; audioEncoding: AudioEncoding },
+    promptPreamble: string,
+    initialMessage: BaseMessage,
     chunkSize: number | undefined,
     downsampling: number | undefined,
     conversationId: string | undefined,
@@ -201,6 +209,8 @@ export const useConversation = (
     },
     conversationId,
     subscribeTranscript,
+    promptPreamble,
+    initialMessage,
   });
 
   const startConversation = async () => {
@@ -329,12 +339,16 @@ export const useConversation = (
       startMessage = getAudioConfigStartMessage(
         inputAudioMetadata,
         outputAudioMetadata,
+        selfHostedConversationConfig.promptPreamble,
+        selfHostedConversationConfig.initialMessage,
         selfHostedConversationConfig.chunkSize,
         selfHostedConversationConfig.downsampling,
         selfHostedConversationConfig.conversationId,
         selfHostedConversationConfig.subscribeTranscript
       );
     }
+
+    console.log("!!!START MESSAGE!!!", startMessage);
 
     socket.send(stringify(startMessage));
     console.log("Access to microphone granted");

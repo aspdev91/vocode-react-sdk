@@ -74,15 +74,14 @@ export const useConversation = (
         socket.send(stringify(audioMessage));
     });
   };
-  
+
   // once the conversation is connected, stream the microphone audio into the socket
   React.useEffect(() => {
     if (!recorder || !socket) return;
     if (status === "connected") {
       if (active)
         recorder.addEventListener("dataavailable", recordingDataListener);
-      else
-        recorder.removeEventListener("dataavailable", recordingDataListener);
+      else recorder.removeEventListener("dataavailable", recordingDataListener);
     }
   }, [recorder, socket, status, active]);
 

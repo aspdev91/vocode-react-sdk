@@ -21,6 +21,7 @@ export type ConversationConfig = {
   agentConfig: AgentConfig;
   synthesizerConfig: Omit<SynthesizerConfig, "samplingRate" | "audioEncoding">;
   vocodeConfig: VocodeConfig;
+  authToken: string;
 };
 export type SelfHostedConversationConfig = {
   backendUrl: string;
@@ -32,6 +33,7 @@ export type SelfHostedConversationConfig = {
   subscribeTranscript?: boolean;
   promptPreamble: string;
   initialMessage: BaseMessage;
+  authToken: string;
 };
 export type AudioMetadata = {
   samplingRate: number;

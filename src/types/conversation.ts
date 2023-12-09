@@ -43,3 +43,16 @@ export type Transcript = {
   sender: string;
   text: string;
 };
+
+export type VocodeConversation = {
+  status: ConversationStatus;
+  start: () => void;
+  stop: () => void;
+  error: Error | undefined;
+  active: boolean;
+  setActive: (active: boolean) => void;
+  toggleActive: () => void;
+  analyserNode: AnalyserNode | undefined;
+  transcripts: Transcript[];
+  currentSpeaker: CurrentSpeaker;
+};

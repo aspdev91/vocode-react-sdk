@@ -77,7 +77,6 @@ export const useConversation = (
         data: base64Encoded,
         authToken: config.authToken,
       };
-      console.log("Sending audio message", audioMessage);
       socket?.readyState === WebSocket.OPEN &&
         socket.send(stringify(audioMessage));
     });

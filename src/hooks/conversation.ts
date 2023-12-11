@@ -36,7 +36,6 @@ const DEFAULT_CHUNK_SIZE = 2048;
 export const useConversation = (
   config: ConversationConfig | SelfHostedConversationConfig
 ): VocodeConversation => {
-  console.log("Starting config", config);
   const [audioContext, setAudioContext] = React.useState<AudioContext>();
   const [audioAnalyser, setAudioAnalyser] = React.useState<AnalyserNode>();
   const [audioQueue, setAudioQueue] = React.useState<Buffer[]>([]);
@@ -233,6 +232,7 @@ export const useConversation = (
 
       if (message.error) {
         stopConversation(new Error(message.error));
+        return;
       } else if (message.type === "websocket_audio") {
         setAudioQueue((prev) => [...prev, Buffer.from(message.data, "base64")]);
       } else if (message.type === "websocket_ready") {
@@ -301,7 +301,6 @@ export const useConversation = (
       return;
     }
     const micSettings = audioStream.getAudioTracks()[0].getSettings();
-    console.log(micSettings);
     const inputAudioMetadata = {
       samplingRate: micSettings.sampleRate || audioContext.sampleRate,
       audioEncoding: "linear16" as AudioEncoding,

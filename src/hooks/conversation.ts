@@ -11,7 +11,6 @@ import {
   CurrentSpeaker,
   SelfHostedConversationConfig,
   Transcript,
-  VocodeConversation,
 } from "../types/conversation";
 import { blobToBase64, stringify } from "../utils";
 import { AudioEncoding } from "../types/vocode/audioEncoding";
@@ -35,7 +34,18 @@ const DEFAULT_CHUNK_SIZE = 2048;
 
 export const useConversation = (
   config: ConversationConfig | SelfHostedConversationConfig
-): VocodeConversation => {
+): {
+  status: ConversationStatus;
+  start: () => void;
+  stop: () => void;
+  error: Error | undefined;
+  active: boolean;
+  setActive: (active: boolean) => void;
+  toggleActive: () => void;
+  analyserNode: AnalyserNode | undefined;
+  transcripts: Transcript[];
+  currentSpeaker: CurrentSpeaker;
+} => {
   console.log("Starting config", config);
   const [audioContext, setAudioContext] = React.useState<AudioContext>();
   const [audioAnalyser, setAudioAnalyser] = React.useState<AnalyserNode>();
@@ -65,6 +75,7 @@ export const useConversation = (
       const audioMessage: AudioMessage = {
         type: "websocket_audio",
         data: base64Encoded,
+        authToken: config.authToken,
       };
       console.log("Sending audio message", audioMessage);
       socket?.readyState === WebSocket.OPEN &&
@@ -231,10 +242,7 @@ export const useConversation = (
     };
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
-
-      if (message.error) {
-        stopConversation(new Error(message.error));
-      } else if (message.type === "websocket_audio") {
+      if (message.type === "websocket_audio") {
         setAudioQueue((prev) => [...prev, Buffer.from(message.data, "base64")]);
       } else if (message.type === "websocket_ready") {
         setStatus("connected");
@@ -347,8 +355,11 @@ export const useConversation = (
       );
     }
 
+    console.log("!!!START MESSAGE!!!", startMessage);
+
     socket.send(stringify(startMessage));
     console.log("Access to microphone granted");
+    console.log(startMessage);
 
     let recorderToUse = recorder;
     if (recorderToUse && recorderToUse.state === "paused") {

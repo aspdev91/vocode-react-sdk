@@ -75,7 +75,6 @@ export const useConversation = (
       const audioMessage: AudioMessage = {
         type: "websocket_audio",
         data: base64Encoded,
-        authToken: config.authToken,
       };
       socket?.readyState === WebSocket.OPEN &&
         socket.send(stringify(audioMessage));
@@ -184,7 +183,6 @@ export const useConversation = (
         outputAudioMetadata
       ),
       conversationId: config.vocodeConfig.conversationId,
-      authToken: config.authToken,
     };
   };
 
@@ -196,8 +194,7 @@ export const useConversation = (
     chunkSize: number | undefined,
     downsampling: number | undefined,
     conversationId: string | undefined,
-    subscribeTranscript: boolean | undefined,
-    authToken: string
+    subscribeTranscript: boolean | undefined
   ): AudioConfigStartMessage => ({
     type: "websocket_audio_config_start",
     inputAudioConfig: {
@@ -214,7 +211,6 @@ export const useConversation = (
     subscribeTranscript,
     promptPreamble,
     initialMessage,
-    authToken,
   });
 
   const startConversation = async () => {
@@ -330,7 +326,6 @@ export const useConversation = (
         "agentConfig",
         "synthesizerConfig",
         "vocodeConfig",
-        "authToken",
       ].every((key) => key in config)
     ) {
       startMessage = getStartMessage(
@@ -349,8 +344,7 @@ export const useConversation = (
         selfHostedConversationConfig.chunkSize,
         selfHostedConversationConfig.downsampling,
         selfHostedConversationConfig.conversationId,
-        selfHostedConversationConfig.subscribeTranscript,
-        selfHostedConversationConfig.authToken
+        selfHostedConversationConfig.subscribeTranscript
       );
     }
 

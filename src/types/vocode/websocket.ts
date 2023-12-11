@@ -14,7 +14,6 @@ export type WebSocketMessageType =
 
 export interface WebSocketMessage {
   type: WebSocketMessageType;
-  authToken: string;
 }
 
 export interface StartMessage extends WebSocketMessage {
@@ -50,7 +49,6 @@ export interface AudioConfigStartMessage extends WebSocketMessage {
 export interface AudioMessage extends WebSocketMessage {
   type: "websocket_audio";
   data: string;
-  authToken: string;
 }
 
 export interface TranscriptMessage extends WebSocketMessage {
@@ -64,6 +62,6 @@ export interface ReadyMessage extends WebSocketMessage {
   type: "websocket_ready";
 }
 
-export interface StopMessage {
+export interface StopMessage extends WebSocketMessage {
   type: "websocket_stop";
 }

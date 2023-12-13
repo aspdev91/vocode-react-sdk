@@ -218,18 +218,6 @@ export const useConversation = (
       audioContext.resume();
     }
 
-    if (document && document.getElementById("floating-assistant")) {
-      // @ts-ignore
-      document
-        .getElementById("floating-assistant")
-        .addEventListener("click", async () => {
-          console.log("RESUMING AUDIO CONTEXT USING EVENT LISTENER");
-          if (audioContext.state === "suspended") {
-            await audioContext.resume();
-          }
-        });
-    }
-
     const backendUrl = await getBackendUrl();
 
     setError(undefined);
